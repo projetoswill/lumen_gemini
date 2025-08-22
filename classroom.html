@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen Classroom - Plataforma Educacional Inteligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.8) 0%, rgba(59, 130, 246, 0.4) 50%, transparent 100%);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(150px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .course-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        
+        .assignment-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .assignment-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #22c55e 0%, #3b82f6 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-element {
+            animation: floatSlow 8s ease-in-out infinite;
+        }
+        
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        
+        .progress-ring {
+            transition: stroke-dasharray 0.5s ease;
+        }
+        
+        .notification-badge {
+            background: linear-gradient(45deg, #ef4444, #f97316);
+            animation: pulse 2s infinite;
+        }
+        
+        .live-indicator {
+            background: #ef4444;
+            animation: livePulse 1.5s infinite;
+        }
+        
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .study-streak {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        
+        .achievement-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.6); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-emerald-900 to-blue-900 min-h-screen text-white">
+    <!-- Particles Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <span class="text-xl font-bold">🎓</span>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Lúmen Classroom</h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dashboard.html" class="hover:text-indigo-400 transition-colors">Dashboard</a>
+                <a href="documentos.html" class="hover:text-indigo-400 transition-colors">Documentos</a>
+                <a href="historico.html" class="hover:text-indigo-400 transition-colors">Histórico</a>
+                <a href="configuracoes.html" class="hover:text-indigo-400 transition-colors">Configurações</a>
+                <a href="recursos.html" class="houver:text-indigo-400 trasition-colors">Voltar</a>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="p-2 hover:bg-white hover:bg-opacity-10 rounded-lg transition-all">
+                        <span class="text-xl">🔔</span>
+                    </button>
+                    <div class="notification-badge absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <!-- Welcome Header -->
+            <div class="mb-12 floating-element">
+                <div class="glass-effect rounded-2xl p-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-4xl font-bold mb-2 gradient-text">
+                                Bem-vindo de volta, Maria! 👋
+                            </h2>
+                            <p class="text-xl text-gray-300">
+                                Continue sua jornada de aprendizado
+                            </p>
+                        </div>
+                        <div class="hidden md:flex items-center space-x-6">
+                            <div class="text-center">
+                                <div class="study-streak w-16 h-16 rounded-full flex items-center justify-center mb-2">
+                                    <span class="text-2xl font-bold text-black">7</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Dias seguidos</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="achievement-badge w-16 h-16 rounded-full flex items-center justify-center mb-2">
+                                    <span class="text-2xl">🏆</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Conquistas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">📚</div>
+                    <div class="text-2xl font-bold text-green-400">5</div>
+                    <div class="text-sm text-gray-400">Cursos Ativos</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">✅</div>
+                    <div class="text-2xl font-bold text-blue-400">12</div>
+                    <div class="text-sm text-gray-400">Atividades Concluídas</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">⏰</div>
+                    <div class="text-2xl font-bold text-purple-400">24h</div>
+                    <div class="text-sm text-gray-400">Tempo de Estudo</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">📊</div>
+                    <div class="text-2xl font-bold text-yellow-400">8.7</div>
+                    <div class="text-sm text-gray-400">Média Geral</div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Courses Section -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">Meus Cursos</h3>
+                        <button class="bg-gradient-to-r from-green-500 to-blue-600 px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-blue-700 transition-all">
+                            Ver Todos
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- Course Card 1 -->
+                        <div class="course-card rounded-xl p-6 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">💻</span>
+                                </div>
+                                <div class="live-indicator w-3 h-3 rounded-full"></div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Desenvolvimento Web</h4>
+                            <p class="text-gray-400 text-sm mb-4">Prof. João Silva • 24 aulas</p>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Progresso</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-400">Próxima aula: React Hooks</span>
+                                <button class="bg-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
+                                    Continuar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Course Card 2 -->
+                        <div class="course-card rounded-xl p-6 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">🤖</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Novo</div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Inteligência Artificial</h4>
+                            <p class="text-gray-400 text-sm mb-4">Prof. Ana Costa • 18 aulas</p>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Progresso</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-green-500 to-teal-600 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-400">Próxima aula: Machine Learning</span>
+                                <button class="bg-green-600 px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors">
+                                    Continuar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Course Card 3 -->
+                        <div class="course-card rounded-xl p-6 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">🎨</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Concluído</div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Design UX/UI</h4>
+                            <p class="text-gray-400 text-sm mb-4">Prof. Carlos Lima • 20 aulas</p>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Progresso</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-pink-600 h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-green-400">✅ Certificado disponível</span>
+                                <button class="bg-purple-600 px-3 py-1 rounded text-sm hover:bg-purple-700 transition-colors">
+                                    Certificado
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Course Card 4 -->
+                        <div class="course-card rounded-xl p-6 cursor-pointer">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">📊</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Em breve</div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Data Science</h4>
+                            <p class="text-gray-400 text-sm mb-4">Prof. Maria Santos • 22 aulas</p>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Progresso</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-orange-500 to-red-600 h-2 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-400">Inicia em 15/12/2024</span>
+                                <button class="bg-gray-600 px-3 py-1 rounded text-sm cursor-not-allowed">
+                                    Em breve
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Upcoming Assignments -->
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-xl font-bold mb-4 flex items-center">
+                            <span class="mr-2">📝</span>
+                            Próximas Atividades
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="assignment-item rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-semibold text-sm">Projeto React</h5>
+                                    <span class="text-xs bg-red-600 px-2 py-1 rounded">Urgente</span>
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2">Desenvolvimento Web</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Entrega: Amanhã</span>
+                                    <span class="text-xs text-yellow-400">⏰ 1 dia</span>
+                                </div>
+                            </div>
+                            
+                            <div class="assignment-item rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-semibold text-sm">Quiz IA</h5>
+                                    <span class="text-xs bg-blue-600 px-2 py-1 rounded">Médio</span>
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2">Inteligência Artificial</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Entrega: 20/12</span>
+                                    <span class="text-xs text-green-400">⏰ 5 dias</span>
+                                </div>
+                            </div>
+                            
+                            <div class="assignment-item rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-semibold text-sm">Portfólio Design</h5>
+                                    <span class="text-xs bg-green-600 px-2 py-1 rounded">Baixo</span>
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2">Design UX/UI</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Entrega: 25/12</span>
+                                    <span class="text-xs text-green-400">⏰ 10 dias</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-xl font-bold mb-4 flex items-center">
+                            <span class="mr-2">🔔</span>
+                            Atividade Recente
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">✅</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Aula concluída</p>
+                                    <p class="text-xs text-gray-400">JavaScript Avançado • há 2 horas</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">📝</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Nova atividade</p>
+                                    <p class="text-xs text-gray-400">Projeto Final IA • há 1 dia</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">🏆</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Conquista desbloqueada</p>
+                                    <p class="text-xs text-gray-400">Estudante Dedicado • há 2 dias</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Schedule -->
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-xl font-bold mb-4 flex items-center">
+                            <span class="mr-2">📅</span>
+                            Agenda de Hoje
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 p-2 bg-blue-600 bg-opacity-20 rounded-lg">
+                                <div class="w-2 h-8 bg-blue-500 rounded"></div>
+                                <div>
+                                    <p class="text-sm font-medium">Aula ao vivo</p>
+                                    <p class="text-xs text-gray-400">React Hooks • 14:00-15:30</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 p-2 bg-green-600 bg-opacity-20 rounded-lg">
+                                <div class="w-2 h-8 bg-green-500 rounded"></div>
+                                <div>
+                                    <p class="text-sm font-medium">Estudo individual</p>
+                                    <p class="text-xs text-gray-400">Machine Learning • 16:00-17:00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 p-2 bg-purple-600 bg-opacity-20 rounded-lg">
+                                <div class="w-2 h-8 bg-purple-500 rounded"></div>
+                                <div>
+                                    <p class="text-sm font-medium">Revisão</p>
+                                    <p class="text-xs text-gray-400">Design Patterns • 19:00-20:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles Animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 6 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 20) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 30000);
+            }
+            
+            setInterval(createParticle, 400);
+        }
+        
+        createParticles();
+
+        // Course Card Interactions
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const courseName = this.querySelector('h4').textContent;
+                const progress = this.querySelector('.flex.justify-between span:last-child').textContent;
+                
+                if (progress === '100%') {
+                    alert(`🎉 Parabéns! Você concluiu o curso "${courseName}". Seu certificado está disponível!`);
+                } else if (progress === '0%') {
+                    alert(`📚 O curso "${courseName}" ainda não começou. Aguarde a data de início!`);
+                } else {
+                    alert(`📖 Continuando o curso "${courseName}". Progresso atual: ${progress}`);
+                }
+            });
+        });
+
+        // Continue/Certificate Button Interactions
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('Continuar')) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const courseName = this.closest('.course-card').querySelector('h4').textContent;
+                    alert(`🚀 Redirecionando para a próxima aula do curso "${courseName}"...`);
+                });
+            }
+            
+            if (button.textContent.includes('Certificado')) {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const courseName = this.closest('.course-card').querySelector('h4').textContent;
+                    alert(`🏆 Baixando certificado do curso "${courseName}"...`);
+                });
+            }
+            
+            if (button.textContent.includes('Ver Todos')) {
+                button.addEventListener('click', function() {
+                    alert('📚 Carregando todos os cursos disponíveis...');
+                });
+            }
+        });
+
+        // Assignment Item Interactions
+        document.querySelectorAll('.assignment-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const assignmentName = this.querySelector('h5').textContent;
+                const courseName = this.querySelector('p').textContent;
+                const priority = this.querySelector('span').textContent;
+                
+                alert(`📝 Abrindo atividade "${assignmentName}" do curso "${courseName}"\nPrioridade: ${priority}`);
+            });
+        });
+
+        // Navigation Links
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.textContent.trim();
+                alert(`🧭 Navegando para: ${section}`);
+            });
+        });
+
+        // Notification Bell
+        document.querySelector('button:has(span:contains("🔔"))') || 
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.innerHTML.includes('🔔')) {
+                btn.addEventListener('click', function() {
+                    alert('🔔 Notificações:\n\n• Nova aula disponível: React Hooks\n• Atividade vencendo amanhã: Projeto React\n• Certificado pronto: Design UX/UI');
+                });
+            }
+        });
+
+        // Profile Avatar
+        document.querySelector('.w-10.h-10.bg-gradient-to-r.from-green-500').addEventListener('click', function() {
+            alert('👤 Menu do usuário:\n\n• Perfil\n• Configurações\n• Histórico de aprendizado\n• Sair');
+        });
+
+        // Stats Cards Interaction
+        document.querySelectorAll('.glass-effect.rounded-xl.p-6.text-center').forEach(card => {
+            card.addEventListener('click', function() {
+                const statName = this.querySelector('.text-sm.text-gray-400').textContent;
+                const statValue = this.querySelector('.text-2xl.font-bold').textContent;
+                
+                let message = '';
+                switch(statName) {
+                    case 'Cursos Ativos':
+                        message = `📚 Você tem ${statValue} cursos em andamento:\n• Desenvolvimento Web (75%)\n• Inteligência Artificial (25%)\n• E mais 3 cursos...`;
+                        break;
+                    case 'Atividades Concluídas':
+                        message = `✅ Parabéns! Você concluiu ${statValue} atividades este mês.\nContinue assim para manter sua sequência de estudos!`;
+                        break;
+                    case 'Tempo de Estudo':
+                        message = `⏰ Você dedicou ${statValue} aos estudos este mês.\nMeta mensal: 30h (80% concluída)`;
+                        break;
+                    case 'Média Geral':
+                        message = `📊 Sua média geral é ${statValue}!\nExcelente desempenho. Continue se dedicando!`;
+                        break;
+                }
+                alert(message);
+            });
+        });
+
+        // Study Schedule Items
+        document.querySelectorAll('.flex.items-center.space-x-3.p-2').forEach(item => {
+            if (item.querySelector('.w-2.h-8')) {
+                item.addEventListener('click', function() {
+                    const eventType = this.querySelector('.text-sm.font-medium').textContent;
+                    const eventDetails = this.querySelector('.text-xs.text-gray-400').textContent;
+                    
+                    if (eventType === 'Aula ao vivo') {
+                        alert(`🔴 AULA AO VIVO\n${eventDetails}\n\nDeseja entrar na sala virtual?`);
+                    } else {
+                        alert(`📖 ${eventType.toUpperCase()}\n${eventDetails}\n\nLembrete configurado!`);
+                    }
+                });
+            }
+        });
+
+        // Recent Activity Items
+        document.querySelectorAll('.flex.items-start.space-x-3').forEach(item => {
+            if (item.querySelector('.w-8.h-8')) {
+                item.addEventListener('click', function() {
+                    const activityType = this.querySelector('.text-sm.font-medium').textContent;
+                    const activityDetails = this.querySelector('.text-xs.text-gray-400').textContent;
+                    
+                    alert(`📋 ${activityType.toUpperCase()}\n${activityDetails}\n\nVer detalhes completos?`);
+                });
+            }
+        });
+
+        // Achievement Badge Animation
+        setInterval(() => {
+            const badge = document.querySelector('.achievement-badge');
+            if (badge) {
+                badge.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    badge.style.transform = 'scale(1)';
+                }, 200);
+            }
+        }, 5000);
+
+        // Study Streak Counter Animation
+        let streakCount = 7;
+        setInterval(() => {
+            const streakElement = document.querySelector('.study-streak span');
+            if (streakElement && Math.random() > 0.95) {
+                streakElement.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    streakElement.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }, 2000);
+
+        // Live Indicator Pulse
+        const liveIndicators = document.querySelectorAll('.live-indicator');
+        liveIndicators.forEach(indicator => {
+            indicator.addEventListener('click', function(e) {
+                e.stopPropagation();
+                alert('🔴 AULA AO VIVO AGORA!\n\nReact Hooks - Desenvolvimento Web\nProf. João Silva\n\nEntrar na sala?');
+            });
+        });
+
+        // Progress Bar Click
+        document.querySelectorAll('.w-full.bg-gray-700.rounded-full.h-2').forEach(progressContainer => {
+            progressContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const courseCard = this.closest('.course-card');
+                const courseName = courseCard.querySelector('h4').textContent;
+                const progress = courseCard.querySelector('.flex.justify-between span:last-child').textContent;
+                
+                alert(`📊 Progresso detalhado - ${courseName}\n\nConcluído: ${progress}\nPróxima meta: Completar mais 2 aulas\nTempo estimado: 3 horas`);
+            });
+        });
+
+        // Welcome message animation
+        setTimeout(() => {
+            const welcomeHeader = document.querySelector('.floating-element');
+            if (welcomeHeader) {
+                welcomeHeader.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    welcomeHeader.style.transform = 'translateY(0px)';
+                }, 1000);
+            }
+        }, 2000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bc6efa3f69522',t:'MTc1NTc5NjU3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

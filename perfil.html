@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen - Minha Conta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(34, 197, 94, 0.4) 50%, transparent 100%);
+            border-radius: 50%;
+            animation: float 22s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(120px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .setting-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .setting-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #22c55e 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-element {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+        
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .avatar-glow {
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+            animation: avatarPulse 3s infinite;
+        }
+        
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 50px rgba(99, 102, 241, 0.6); }
+        }
+        
+        .achievement-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            animation: shine 4s infinite;
+        }
+        
+        @keyframes shine {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.6); }
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            animation: goldShine 3s infinite;
+        }
+        
+        @keyframes goldShine {
+            0%, 100% { box-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(251, 191, 36, 0.7); }
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #374151;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #6366f1, #22c55e);
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(26px);
+        }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+        
+        .tab-button {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(34, 197, 94, 0.2));
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #6366f1, #22c55e);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-900 to-emerald-900 min-h-screen text-white">
+    <!-- Particles Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <span class="text-xl font-bold">✨</span>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Lumen</h1>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="hover:text-indigo-400 transition-colors" onclick="goBack('dashboard')">Dashboard</a>
+                <a href="#" class="hover:text-indigo-400 transition-colors" onclick="goBack('documents')">Documentos</a>
+                <a href="#" class="hover:text-indigo-400 transition-colors" onclick="goBack('courses')">Cursos</a>
+                <a href="#" class="hover:text-indigo-400 transition-colors" onclick="goBack('settings')">Configurações</a>
+            </div>
+            
+            <button class="bg-gradient-to-r from-indigo-500 to-green-600 px-6 py-2 rounded-xl font-semibold hover:from-indigo-600 hover:to-green-700 transition-all" onclick="showNotifications()">
+                Notificações
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <!-- Profile Header -->
+            <div class="profile-card rounded-2xl p-8 mb-8 floating-element">
+                <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+                    <!-- Avatar Section -->
+                    <div class="text-center">
+                        <div class="relative">
+                            <div class="w-32 h-32 bg-gradient-to-r from-indigo-500 to-green-600 rounded-full flex items-center justify-center avatar-glow mb-4 cursor-pointer" onclick="changeAvatar()">
+                                <span class="text-5xl">👤</span>
+                            </div>
+                            <div class="absolute -bottom-2 -right-2 premium-badge w-10 h-10 rounded-full flex items-center justify-center">
+                                <span class="text-lg font-bold text-black">⭐</span>
+                            </div>
+                        </div>
+                        <button class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg text-sm transition-colors" onclick="uploadPhoto()">
+                            Alterar Foto
+                        </button>
+                    </div>
+                    
+                    <!-- Profile Info -->
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mb-4">
+                            <h2 class="text-3xl font-bold gradient-text mb-2 md:mb-0">Maria Silva Santos</h2>
+                            <div class="flex items-center justify-center md:justify-start space-x-2">
+                                <span class="premium-badge px-3 py-1 rounded-full text-xs font-bold text-black">PREMIUM</span>
+                                <span class="bg-green-600 px-3 py-1 rounded-full text-xs font-bold">ATIVO</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 mb-4">maria.silva@email.com</p>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-indigo-400">127</div>
+                                <div class="text-sm text-gray-400">Documentos</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-400">5</div>
+                                <div class="text-sm text-gray-400">Cursos</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-400">89h</div>
+                                <div class="text-sm text-gray-400">Estudo</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-400">12</div>
+                                <div class="text-sm text-gray-400">Conquistas</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                            <span class="achievement-badge px-3 py-1 rounded-full text-xs font-bold">🏆 Estudante Dedicado</span>
+                            <span class="achievement-badge px-3 py-1 rounded-full text-xs font-bold">📚 Leitor Voraz</span>
+                            <span class="achievement-badge px-3 py-1 rounded-full text-xs font-bold">🎯 Meta Alcançada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="glass-effect rounded-xl p-2 mb-8">
+                <div class="flex flex-wrap gap-2">
+                    <button class="tab-button active px-6 py-3 rounded-lg font-semibold border border-transparent" onclick="switchTab('profile')">
+                        👤 Perfil
+                    </button>
+                    <button class="tab-button px-6 py-3 rounded-lg font-semibold border border-transparent" onclick="switchTab('security')">
+                        🔒 Segurança
+                    </button>
+                    <button class="tab-button px-6 py-3 rounded-lg font-semibold border border-transparent" onclick="switchTab('preferences')">
+                        ⚙️ Preferências
+                    </button>
+                    <button class="tab-button px-6 py-3 rounded-lg font-semibold border border-transparent" onclick="switchTab('subscription')">
+                        💎 Assinatura
+                    </button>
+                    <button class="tab-button px-6 py-3 rounded-lg font-semibold border border-transparent" onclick="switchTab('activity')">
+                        📊 Atividade
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tabContent">
+                <!-- Profile Tab -->
+                <div id="profile-tab" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Personal Information -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">👤</span>
+                                Informações Pessoais
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Nome Completo</label>
+                                    <input type="text" value="Maria Silva Santos" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Email</label>
+                                    <input type="email" value="maria.silva@email.com" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Telefone</label>
+                                    <input type="tel" value="+55 (11) 99999-9999" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Data de Nascimento</label>
+                                    <input type="date" value="1990-05-15" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Bio</label>
+                                    <textarea class="input-field w-full px-4 py-3 rounded-lg focus:outline-none h-24" placeholder="Conte um pouco sobre você...">Estudante de tecnologia apaixonada por IA e desenvolvimento web. Sempre em busca de novos conhecimentos!</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">💼</span>
+                                Informações Profissionais
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Profissão</label>
+                                    <input type="text" value="Desenvolvedora Frontend" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Empresa</label>
+                                    <input type="text" value="Tech Solutions Ltda" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Nível de Experiência</label>
+                                    <select class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                        <option>Iniciante</option>
+                                        <option selected>Intermediário</option>
+                                        <option>Avançado</option>
+                                        <option>Expert</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Áreas de Interesse</label>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="bg-indigo-600 px-3 py-1 rounded-full text-xs">JavaScript</span>
+                                        <span class="bg-green-600 px-3 py-1 rounded-full text-xs">React</span>
+                                        <span class="bg-blue-600 px-3 py-1 rounded-full text-xs">IA</span>
+                                        <span class="bg-purple-600 px-3 py-1 rounded-full text-xs">UX/UI</span>
+                                        <button class="bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded-full text-xs transition-colors">+ Adicionar</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">LinkedIn</label>
+                                    <input type="url" value="https://linkedin.com/in/mariasilva" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end mt-8">
+                        <button class="bg-gradient-to-r from-indigo-500 to-green-600 px-8 py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-green-700 transition-all" onclick="saveProfile()">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div id="security-tab" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Password Settings -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">🔐</span>
+                                Alterar Senha
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Senha Atual</label>
+                                    <input type="password" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Nova Senha</label>
+                                    <input type="password" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Confirmar Nova Senha</label>
+                                    <input type="password" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                </div>
+                                <button class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg transition-colors" onclick="changePassword()">
+                                    Alterar Senha
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Two-Factor Authentication -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">🛡️</span>
+                                Autenticação em Duas Etapas
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">SMS</h4>
+                                            <p class="text-sm text-gray-400">Receber códigos por SMS</p>
+                                        </div>
+                                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">App Autenticador</h4>
+                                            <p class="text-sm text-gray-400">Google Authenticator, Authy</p>
+                                        </div>
+                                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Email</h4>
+                                            <p class="text-sm text-gray-400">Códigos por email</p>
+                                        </div>
+                                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Sessions -->
+                    <div class="glass-effect rounded-xl p-6 mt-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="mr-2">📱</span>
+                            Sessões Ativas
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="setting-item rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                            <span class="text-lg">💻</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Chrome - Windows</h4>
+                                            <p class="text-sm text-gray-400">São Paulo, Brasil • Agora</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm text-green-400">Atual</span>
+                                </div>
+                            </div>
+                            <div class="setting-item rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                                            <span class="text-lg">📱</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Safari - iPhone</h4>
+                                            <p class="text-sm text-gray-400">São Paulo, Brasil • há 2 horas</p>
+                                        </div>
+                                    </div>
+                                    <button class="text-red-400 hover:text-red-300 text-sm" onclick="terminateSession('mobile')">
+                                        Encerrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Tab -->
+                <div id="preferences-tab" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Notification Settings -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">🔔</span>
+                                Notificações
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Email de Marketing</h4>
+                                            <p class="text-sm text-gray-400">Novidades e promoções</p>
+                                        </div>
+                                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Notificações Push</h4>
+                                            <p class="text-sm text-gray-400">Alertas no navegador</p>
+                                        </div>
+                                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Lembretes de Estudo</h4>
+                                            <p class="text-sm text-gray-400">Horários de estudo</p>
+                                        </div>
+                                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Display Settings -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">🎨</span>
+                                Aparência
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Tema</label>
+                                    <select class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                        <option>Automático</option>
+                                        <option selected>Escuro</option>
+                                        <option>Claro</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Idioma</label>
+                                    <select class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                        <option selected>Português (Brasil)</option>
+                                        <option>English (US)</option>
+                                        <option>Español</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Fuso Horário</label>
+                                    <select class="input-field w-full px-4 py-3 rounded-lg focus:outline-none">
+                                        <option selected>América/São_Paulo</option>
+                                        <option>America/New_York</option>
+                                        <option>Europe/London</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div class="glass-effect rounded-xl p-6 mt-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="mr-2">🔒</span>
+                            Privacidade
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="setting-item rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold">Perfil Público</h4>
+                                        <p class="text-sm text-gray-400">Outros podem ver seu perfil</p>
+                                    </div>
+                                    <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                                </div>
+                            </div>
+                            <div class="setting-item rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold">Mostrar Progresso</h4>
+                                        <p class="text-sm text-gray-400">Exibir estatísticas</p>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Tab -->
+                <div id="subscription-tab" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Current Plan -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">💎</span>
+                                Plano Atual
+                            </h3>
+                            <div class="text-center mb-6">
+                                <div class="premium-badge w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-3xl">⭐</span>
+                                </div>
+                                <h4 class="text-2xl font-bold gradient-text mb-2">Premium</h4>
+                                <p class="text-gray-400">Acesso completo a todos os recursos</p>
+                            </div>
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-green-400">✅</span>
+                                    <span>Documentos ilimitados</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-green-400">✅</span>
+                                    <span>Todos os cursos</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-green-400">✅</span>
+                                    <span>IA avançada</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-green-400">✅</span>
+                                    <span>Suporte prioritário</span>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-gray-400 mb-2">Próxima cobrança: 15/01/2025</p>
+                                <p class="text-2xl font-bold">R$ 29,90/mês</p>
+                            </div>
+                        </div>
+
+                        <!-- Billing History -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">📄</span>
+                                Histórico de Pagamentos
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Premium - Dezembro 2024</h4>
+                                            <p class="text-sm text-gray-400">15/12/2024</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold">R$ 29,90</p>
+                                            <p class="text-sm text-green-400">Pago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Premium - Novembro 2024</h4>
+                                            <p class="text-sm text-gray-400">15/11/2024</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold">R$ 29,90</p>
+                                            <p class="text-sm text-green-400">Pago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-semibold">Premium - Outubro 2024</h4>
+                                            <p class="text-sm text-gray-400">15/10/2024</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold">R$ 29,90</p>
+                                            <p class="text-sm text-green-400">Pago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-lg transition-colors" onclick="downloadInvoices()">
+                                Baixar Todas as Faturas
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Plan Management -->
+                    <div class="glass-effect rounded-xl p-6 mt-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="mr-2">⚙️</span>
+                            Gerenciar Assinatura
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-lg transition-colors" onclick="changePlan()">
+                                Alterar Plano
+                            </button>
+                            <button class="bg-gray-600 hover:bg-gray-500 px-6 py-3 rounded-lg transition-colors" onclick="pauseSubscription()">
+                                Pausar Assinatura
+                            </button>
+                            <button class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg transition-colors" onclick="cancelSubscription()">
+                                Cancelar Assinatura
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Tab -->
+                <div id="activity-tab" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Recent Activity -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">📊</span>
+                                Atividade Recente
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-xs">📄</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Documento processado</h4>
+                                            <p class="text-sm text-gray-400">Relatório_Anual_2024.pdf • há 2 horas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-xs">🎓</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Aula concluída</h4>
+                                            <p class="text-sm text-gray-400">React Hooks - Desenvolvimento Web • há 4 horas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="setting-item rounded-lg p-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-xs">🏆</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Conquista desbloqueada</h4>
+                                            <p class="text-sm text-gray-400">Estudante Dedicado • há 1 dia</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Usage Statistics -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-6 flex items-center">
+                                <span class="mr-2">📈</span>
+                                Estatísticas de Uso
+                            </h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm">Documentos este mês</span>
+                                        <span class="text-sm font-semibold">47/100</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-indigo-500 to-green-600 h-2 rounded-full" style="width: 47%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm">Horas de estudo</span>
+                                        <span class="text-sm font-semibold">24h/40h</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm">Cursos ativos</span>
+                                        <span class="text-sm font-semibold">5/10</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Export -->
+                    <div class="glass-effect rounded-xl p-6 mt-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="mr-2">💾</span>
+                            Exportar Dados
+                        </h3>
+                        <p class="text-gray-400 mb-6">Baixe uma cópia de todos os seus dados da plataforma Lumen.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-lg transition-colors" onclick="exportData('profile')">
+                                Dados do Perfil
+                            </button>
+                            <button class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg transition-colors" onclick="exportData('documents')">
+                                Documentos
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors" onclick="exportData('progress')">
+                                Progresso dos Cursos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles Animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 12 + 18) + 's';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 28000);
+            }
+            
+            setInterval(createParticle, 350);
+        }
+        
+        createParticles();
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Toggle Settings
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+        }
+
+        // Profile Functions
+        function changeAvatar() {
+            alert('🖼️ Seletor de avatar aberto!\n\nEscolha entre:\n• Foto personalizada\n• Avatares predefinidos\n• Emoji personalizado');
+        }
+
+        function uploadPhoto() {
+            alert('📸 Upload de foto iniciado!\n\nFormatos aceitos: JPG, PNG, GIF\nTamanho máximo: 5MB');
+        }
+
+        function saveProfile() {
+            alert('✅ Perfil salvo com sucesso!\n\nTodas as alterações foram aplicadas.');
+        }
+
+        // Security Functions
+        function changePassword() {
+            alert('🔐 Alteração de senha iniciada!\n\nVerifique seu email para confirmar a alteração.');
+        }
+
+        function terminateSession(device) {
+            alert(`📱 Sessão ${device} encerrada com sucesso!\n\nO dispositivo foi desconectado da sua conta.`);
+        }
+
+        // Subscription Functions
+        function changePlan() {
+            alert('💎 Alterar plano:\n\n• Básico - R$ 9,90/mês\n• Premium - R$ 29,90/mês (atual)\n• Enterprise - R$ 99,90/mês');
+        }
+
+        function pauseSubscription() {
+            alert('⏸️ Pausar assinatura:\n\nSua assinatura será pausada e você manterá acesso até 15/01/2025.');
+        }
+
+        function cancelSubscription() {
+            if (confirm('❌ Tem certeza que deseja cancelar sua assinatura?\n\nVocê perderá acesso aos recursos Premium.')) {
+                alert('Assinatura cancelada. Você manterá acesso até o final do período pago.');
+            }
+        }
+
+        function downloadInvoices() {
+            alert('📄 Baixando todas as faturas...\n\nArquivo ZIP será baixado em instantes.');
+        }
+
+        // Activity Functions
+        function exportData(type) {
+            const types = {
+                'profile': 'Dados do Perfil',
+                'documents': 'Documentos',
+                'progress': 'Progresso dos Cursos'
+            };
+            alert(`💾 Exportando ${types[type]}...\n\nO arquivo será enviado para seu email em até 24 horas.`);
+        }
+
+        // Navigation Functions
+        function goBack(section) {
+            const sections = {
+                'dashboard': 'Dashboard Principal',
+                'documents': 'Processamento de Documentos',
+                'courses': 'Lumen Classroom',
+                'settings': 'Configurações Gerais'
+            };
+            alert(`🧭 Redirecionando para: ${sections[section]}`);
+        }
+
+        function showNotifications() {
+            alert('🔔 Notificações:\n\n• Novo curso disponível: Data Science\n• Documento processado: Relatório_Q4.pdf\n• Lembrete: Aula ao vivo em 30 minutos\n• Conquista desbloqueada: Estudante Dedicado');
+        }
+
+        // Stats Click Handlers
+        document.querySelectorAll('.text-center').forEach(stat => {
+            if (stat.querySelector('.text-2xl.font-bold')) {
+                stat.addEventListener('click', function() {
+                    const value = this.querySelector('.text-2xl.font-bold').textContent;
+                    const label = this.querySelector('.text-sm.text-gray-400').textContent;
+                    
+                    let message = '';
+                    switch(label) {
+                        case 'Documentos':
+                            message = `📄 Você processou ${value} documentos!\n\nTipos mais comuns:\n• PDFs (45%)\n• Word (30%)\n• Texto (25%)`;
+                            break;
+                        case 'Cursos':
+                            message = `🎓 Você está matriculado em ${value} cursos!\n\n• 3 em andamento\n• 2 concluídos\n• Próximo: Data Science`;
+                            break;
+                        case 'Estudo':
+                            message = `⏰ Você dedicou ${value} aos estudos!\n\nMeta mensal: 100h\nProgresso: 89%\nMédia diária: 2.8h`;
+                            break;
+                        case 'Conquistas':
+                            message = `🏆 Você desbloqueou ${value} conquistas!\n\n• Estudante Dedicado\n• Leitor Voraz\n• Meta Alcançada\n• E mais 9...`;
+                            break;
+                    }
+                    alert(message);
+                });
+            }
+        });
+
+        // Achievement Badges Click
+        document.querySelectorAll('.achievement-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                const badgeText = this.textContent.trim();
+                alert(`🏆 Conquista: ${badgeText}\n\nParabéns! Você desbloqueou esta conquista através do seu esforço e dedicação.`);
+            });
+        });
+
+        // Premium Badge Click
+        document.querySelector('.premium-badge').addEventListener('click', function() {
+            alert('⭐ Status Premium Ativo!\n\nBenefícios:\n• Documentos ilimitados\n• Todos os cursos\n• IA avançada\n• Suporte prioritário\n• Sem anúncios');
+        });
+
+        // Input Field Focus Effects
+        document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'translateY(0px)';
+            });
+        });
+
+        // Floating Animation for Profile Card
+        setInterval(() => {
+            const profileCard = document.querySelector('.profile-card');
+            if (profileCard) {
+                profileCard.style.transform = 'translateY(-2px)';
+                setTimeout(() => {
+                    profileCard.style.transform = 'translateY(0px)';
+                }, 2000);
+            }
+        }, 8000);
+
+        // Avatar Glow Animation Enhancement
+        setInterval(() => {
+            const avatar = document.querySelector('.avatar-glow');
+            if (avatar && Math.random() > 0.8) {
+                avatar.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    avatar.style.transform = 'scale(1)';
+                }, 500);
+            }
+        }, 3000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bd305006b8a83',t:'MTc1NTc5NzA3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lúmen GEMINI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(34, 197, 94, 0.4) 50%, transparent 100%);
+            border-radius: 50%;
+            animation: float 22s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(120px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #22c55e 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-element {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+        
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #6366f1 0%, #22c55e 50%, #06b6d4 100%);
+            animation: progressGlow 3s infinite;
+        }
+        
+        @keyframes progressGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); }
+        }
+        
+        .notification-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: notificationPulse 2s infinite;
+        }
+        
+        @keyframes notificationPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .activity-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .quick-action-btn {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(34, 197, 94, 0.2));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(34, 197, 94, 0.3));
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .welcome-animation {
+            animation: welcomeSlide 1s ease-out;
+        }
+        
+        @keyframes welcomeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .counter-animation {
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .achievement-glow {
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+            animation: achievementShine 4s infinite;
+        }
+        
+        @keyframes achievementShine {
+            0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.7); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-900 to-emerald-900 min-h-screen text-white">
+    <!-- Particles Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <span class="text-xl font-bold">✨</span>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Lúmen GEMINI</h1>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dashboard.html" class="hover:text-indigo-400 transition-colors">Dashboard</a>
+                <a href="documentos.html" class="hover:text-indigo-400 transition-colors">Documentos</a>
+                <a href="historico.html" class="hover:text-indigo-400 transition-colors">Histórico</a>
+                <a href="configuracoes.html" class="hover:text-indigo-400 transition-colors">Configurações</a>
+                <a href="recursos.html" class="houver:text-indigo-400 trasition-colors">Voltar</a>
+            </div>
+            
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 hover:bg-white/10 rounded-lg transition-colors" onclick="showNotifications()">
+                    <span class="text-xl">🔔</span>
+                    <div class="notification-badge absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center">
+                        <span class="text-xs font-bold text-white">3</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <!-- Welcome Section -->
+            <div class="welcome-animation mb-8">
+                <div class="dashboard-card rounded-2xl p-8 floating-element">
+                    <div class="flex flex-col md:flex-row items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold gradient-text mb-2">Bem-vinda de volta, Maria! 👋</h2>
+                            <p class="text-gray-300 text-lg">Você está fazendo um ótimo progresso. Continue assim!</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-center">
+                            <div class="text-2xl mb-2">🔥</div>
+                            <div class="text-xl font-bold text-orange-400">7 dias</div>
+                            <div class="text-sm text-gray-400">Sequência de estudos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="metric-card rounded-xl p-6 counter-animation" onclick="showMetricDetails('documents')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">📄</span>
+                        </div>
+                        <span class="text-green-400 text-sm font-semibold">+12 hoje</span>
+                    </div>
+                    <div class="text-3xl font-bold text-blue-400 mb-1">127</div>
+                    <div class="text-gray-400 text-sm">Documentos Processados</div>
+                    <div class="mt-3 w-full bg-gray-700 rounded-full h-2">
+                        <div class="progress-bar h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card rounded-xl p-6 counter-animation" onclick="showMetricDetails('courses')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">🎓</span>
+                        </div>
+                        <span class="text-green-400 text-sm font-semibold">2 ativos</span>
+                    </div>
+                    <div class="text-3xl font-bold text-green-400 mb-1">5</div>
+                    <div class="text-gray-400 text-sm">Cursos Matriculados</div>
+                    <div class="mt-3 w-full bg-gray-700 rounded-full h-2">
+                        <div class="progress-bar h-2 rounded-full" style="width: 60%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card rounded-xl p-6 counter-animation" onclick="showMetricDetails('study')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <span class="text-xl">⏰</span>
+                        </div>
+                        <span class="text-green-400 text-sm font-semibold">+2.5h hoje</span>
+                    </div>
+                    <div class="text-3xl font-bold text-purple-400 mb-1">89h</div>
+                    <div class="text-gray-400 text-sm">Tempo de Estudo</div>
+                    <div class="mt-3 w-full bg-gray-700 rounded-full h-2">
+                        <div class="progress-bar h-2 rounded-full" style="width: 89%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card rounded-xl p-6 counter-animation" onclick="showMetricDetails('achievements')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center achievement-glow">
+                            <span class="text-xl">🏆</span>
+                        </div>
+                        <span class="text-green-400 text-sm font-semibold">+1 nova</span>
+                    </div>
+                    <div class="text-3xl font-bold text-yellow-400 mb-1">12</div>
+                    <div class="text-gray-400 text-sm">Conquistas</div>
+                    <div class="mt-3 w-full bg-gray-700 rounded-full h-2">
+                        <div class="progress-bar h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-card rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">⚡</span>
+                    Ações Rápidas
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="quick-action-btn p-4 rounded-xl text-center" onclick="quickAction('upload')">
+                        <div class="text-2xl mb-2">📤</div>
+                        <div class="font-semibold">Upload Documento</div>
+                    </button>
+                    <button class="quick-action-btn p-4 rounded-xl text-center" onclick="quickAction('course')">
+                        <div class="text-2xl mb-2">🎯</div>
+                        <div class="font-semibold">Novo Curso</div>
+                    </button>
+                    <button class="quick-action-btn p-4 rounded-xl text-center" onclick="quickAction('ai')">
+                        <div class="text-2xl mb-2">🤖</div>
+                        <div class="font-semibold">Chat IA</div>
+                    </button>
+                    <button class="quick-action-btn p-4 rounded-xl text-center" onclick="quickAction('report')">
+                        <div class="text-2xl mb-2">📊</div>
+                        <div class="font-semibold">Relatório</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Progress Chart -->
+                <div class="lg:col-span-2 dashboard-card rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold flex items-center">
+                            <span class="mr-2">📈</span>
+                            Progresso Semanal
+                        </h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-indigo-600 rounded-lg text-sm" onclick="changeChartPeriod('week')">Semana</button>
+                            <button class="px-3 py-1 bg-gray-600 rounded-lg text-sm" onclick="changeChartPeriod('month')">Mês</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">🕒</span>
+                        Atividade Recente
+                    </h3>
+                    <div class="space-y-4 max-h-80 overflow-y-auto">
+                        <div class="activity-item rounded-lg p-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">📄</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Documento processado</h4>
+                                    <p class="text-xs text-gray-400">Relatório_Q4_2024.pdf</p>
+                                    <p class="text-xs text-gray-500">há 15 minutos</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">🎓</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Aula concluída</h4>
+                                    <p class="text-xs text-gray-400">React Hooks Avançados</p>
+                                    <p class="text-xs text-gray-500">há 2 horas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">🏆</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Conquista desbloqueada</h4>
+                                    <p class="text-xs text-gray-400">Estudante Dedicado</p>
+                                    <p class="text-xs text-gray-500">há 4 horas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">🤖</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">IA consultada</h4>
+                                    <p class="text-xs text-gray-400">Análise de dados Python</p>
+                                    <p class="text-xs text-gray-500">há 6 horas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs">📝</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Quiz completado</h4>
+                                    <p class="text-xs text-gray-400">JavaScript ES6+ - 95%</p>
+                                    <p class="text-xs text-gray-500">ontem</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Courses & Goals -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Current Courses -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">📚</span>
+                        Cursos em Andamento
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="activity-item rounded-lg p-4 cursor-pointer" onclick="openCourse('react')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold">Desenvolvimento React Avançado</h4>
+                                <span class="text-sm text-green-400">75%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>12/16 aulas</span>
+                                <span>~3h restantes</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-4 cursor-pointer" onclick="openCourse('python')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold">Python para Data Science</h4>
+                                <span class="text-sm text-yellow-400">45%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="bg-gradient-to-r from-yellow-500 to-orange-600 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>9/20 aulas</span>
+                                <span>~8h restantes</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-4 cursor-pointer" onclick="openCourse('ai')">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold">Fundamentos de IA</h4>
+                                <span class="text-sm text-blue-400">20%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style="width: 20%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>3/15 aulas</span>
+                                <span>~12h restantes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goals & Achievements -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">🎯</span>
+                        Metas & Conquistas
+                    </h3>
+                    
+                    <!-- Weekly Goal -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">Meta Semanal</h4>
+                            <span class="text-sm text-green-400">24h/30h</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-green-500 to-blue-600 h-3 rounded-full progress-bar" style="width: 80%"></div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-1">Faltam 6h para completar sua meta!</p>
+                    </div>
+
+                    <!-- Recent Achievements -->
+                    <div class="space-y-3">
+                        <div class="activity-item rounded-lg p-3 cursor-pointer" onclick="showAchievement('dedicated')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center achievement-glow">
+                                    <span class="text-lg">🔥</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Estudante Dedicado</h4>
+                                    <p class="text-xs text-gray-400">7 dias consecutivos de estudo</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3 cursor-pointer" onclick="showAchievement('reader')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">📚</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Leitor Voraz</h4>
+                                    <p class="text-xs text-gray-400">100+ documentos processados</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item rounded-lg p-3 cursor-pointer" onclick="showAchievement('goal')">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">🎯</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Meta Alcançada</h4>
+                                    <p class="text-xs text-gray-400">Primeira meta mensal completa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="dashboard-card rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">🤖</span>
+                    Insights da IA
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="activity-item rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-3xl mb-3">📈</div>
+                            <h4 class="font-semibold mb-2">Produtividade</h4>
+                            <p class="text-sm text-gray-400">Sua produtividade aumentou 23% esta semana. Continue focando em React!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-3xl mb-3">🎯</div>
+                            <h4 class="font-semibold mb-2">Recomendação</h4>
+                            <p class="text-sm text-gray-400">Baseado no seu progresso, recomendamos o curso "Node.js Avançado".</p>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-3xl mb-3">⏰</div>
+                            <h4 class="font-semibold mb-2">Melhor Horário</h4>
+                            <p class="text-sm text-gray-400">Você é mais produtiva entre 14h-16h. Agende estudos importantes neste período.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles Animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 12 + 18) + 's';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 28000);
+            }
+            
+            setInterval(createParticle, 350);
+        }
+        
+        createParticles();
+
+        // Progress Chart
+        let progressChart;
+        
+        function initializeChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    datasets: [
+                        {
+                            label: 'Documentos',
+                            data: [12, 19, 8, 15, 22, 18, 25],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Horas de Estudo',
+                            data: [2, 3.5, 1.5, 4, 3, 2.5, 4.5],
+                            borderColor: '#22c55e',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#9ca3af'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#9ca3af'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize chart when page loads
+        window.addEventListener('load', initializeChart);
+
+        // Navigation Functions
+        function navigateTo(section) {
+            const sections = {
+                'documents': 'Processamento de Documentos',
+                'courses': 'Lumen Classroom',
+                'profile': 'Perfil do Usuário'
+            };
+            alert(`🧭 Navegando para: ${sections[section]}`);
+        }
+
+        function showNotifications() {
+            alert('🔔 Notificações:\n\n• 📄 Novo documento processado\n• 🎓 Aula "Python Básico" disponível\n• 🏆 Conquista "Estudante Dedicado" desbloqueada\n• 📊 Relatório semanal pronto');
+        }
+
+        // Metric Details
+        function showMetricDetails(metric) {
+            const details = {
+                'documents': '📄 Documentos Processados:\n\n• Total: 127 documentos\n• Esta semana: +23\n• Hoje: +12\n• Tipos: PDF (45%), Word (30%), Texto (25%)\n• Tempo médio: 2.3 min/doc',
+                'courses': '🎓 Cursos:\n\n• Matriculados: 5 cursos\n• Em andamento: 3 cursos\n• Concluídos: 2 cursos\n• Próxima aula: React Hooks (hoje 15h)\n• Tempo investido: 89h total',
+                'study': '⏰ Tempo de Estudo:\n\n• Total: 89 horas\n• Esta semana: 24h\n• Hoje: 2.5h\n• Média diária: 2.8h\n• Melhor dia: Quinta (4.5h)\n• Meta mensal: 120h (74%)',
+                'achievements': '🏆 Conquistas:\n\n• Total: 12 conquistas\n• Nova hoje: Estudante Dedicado\n• Próxima: Mestre dos Documentos (88/100)\n• Pontos: 2,450 XP\n• Ranking: Top 15%'
+            };
+            alert(details[metric]);
+        }
+
+        // Quick Actions
+        function quickAction(action) {
+            const actions = {
+                'upload': '📤 Upload de Documento:\n\nAbrindo seletor de arquivos...\nFormatos aceitos: PDF, DOC, TXT, MD\nTamanho máximo: 50MB',
+                'course': '🎯 Novo Curso:\n\nCursos recomendados para você:\n• Node.js Avançado\n• TypeScript Essencial\n• Docker & Kubernetes\n• Machine Learning Básico',
+                'ai': '🤖 Chat com IA:\n\nOlá! Como posso ajudar você hoje?\n\n• Explicar conceitos\n• Revisar código\n• Sugerir estudos\n• Tirar dúvidas',
+                'report': '📊 Relatório:\n\nGerando relatório personalizado...\n\n• Progresso semanal\n• Estatísticas detalhadas\n• Recomendações da IA\n• Metas e conquistas'
+            };
+            alert(actions[action]);
+        }
+
+        // Course Functions
+        function openCourse(course) {
+            const courses = {
+                'react': '⚛️ React Avançado:\n\nPróxima aula: "Custom Hooks"\nDuração: 45 min\nPré-requisitos: ✅ Completos\nMaterial: Slides + Código',
+                'python': '🐍 Python Data Science:\n\nPróxima aula: "Pandas Avançado"\nDuração: 60 min\nPré-requisitos: ⚠️ Revisar NumPy\nMaterial: Jupyter Notebook',
+                'ai': '🤖 Fundamentos de IA:\n\nPróxima aula: "Redes Neurais"\nDuração: 90 min\nPré-requisitos: ✅ Completos\nMaterial: Teoria + Prática'
+            };
+            alert(courses[course]);
+        }
+
+        // Achievement Functions
+        function showAchievement(achievement) {
+            const achievements = {
+                'dedicated': '🔥 Estudante Dedicado:\n\nParabéns! Você estudou por 7 dias consecutivos!\n\nRecompensa: +500 XP\nPróxima meta: 14 dias consecutivos\nBônus: Acesso antecipado a novos cursos',
+                'reader': '📚 Leitor Voraz:\n\nIncrível! Você processou mais de 100 documentos!\n\nRecompensa: +300 XP\nPróxima meta: 200 documentos\nBônus: Processamento prioritário',
+                'goal': '🎯 Meta Alcançada:\n\nExcelente! Primeira meta mensal completa!\n\nRecompensa: +750 XP\nPróxima meta: 3 metas consecutivas\nBônus: Certificado de dedicação'
+            };
+            alert(achievements[achievement]);
+        }
+
+        // Chart Period Change
+        function changeChartPeriod(period) {
+            if (period === 'month') {
+                progressChart.data.labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+                progressChart.data.datasets[0].data = [85, 92, 78, 105];
+                progressChart.data.datasets[1].data = [18, 22, 16, 28];
+            } else {
+                progressChart.data.labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+                progressChart.data.datasets[0].data = [12, 19, 8, 15, 22, 18, 25];
+                progressChart.data.datasets[1].data = [2, 3.5, 1.5, 4, 3, 2.5, 4.5];
+            }
+            progressChart.update();
+            
+            // Update button styles
+            document.querySelectorAll('[onclick*="changeChartPeriod"]').forEach(btn => {
+                btn.classList.remove('bg-indigo-600');
+                btn.classList.add('bg-gray-600');
+            });
+            event.target.classList.remove('bg-gray-600');
+            event.target.classList.add('bg-indigo-600');
+        }
+
+        // Real-time Updates Simulation
+        function simulateRealTimeUpdates() {
+            setInterval(() => {
+                // Randomly update some metrics
+                if (Math.random() > 0.7) {
+                    const notifications = document.querySelector('.notification-badge span');
+                    const currentCount = parseInt(notifications.textContent);
+                    notifications.textContent = currentCount + 1;
+                }
+            }, 30000); // Every 30 seconds
+        }
+
+        simulateRealTimeUpdates();
+
+        // Welcome Animation Trigger
+        setTimeout(() => {
+            const welcomeSection = document.querySelector('.welcome-animation');
+            welcomeSection.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                welcomeSection.style.transform = 'scale(1)';
+            }, 200);
+        }, 1000);
+
+        // Counter Animation for Metrics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter-animation .text-3xl');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                let current = 0;
+                const increment = target / 50;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target + (counter.textContent.includes('h') ? 'h' : '');
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current) + (counter.textContent.includes('h') ? 'h' : '');
+                    }
+                }, 40);
+            });
+        }
+
+        // Trigger counter animation after page load
+        setTimeout(animateCounters, 500);
+
+        // Floating animation for dashboard cards
+        setInterval(() => {
+            const cards = document.querySelectorAll('.floating-element');
+            cards.forEach(card => {
+                if (Math.random() > 0.8) {
+                    card.style.transform = 'translateY(-3px)';
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(0px)';
+                    }, 1000);
+                }
+            });
+        }, 5000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bea662044210d',t:'MTc1NTc5ODAyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

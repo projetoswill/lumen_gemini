@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lúmen GEMINI - ASSISTENTE SENAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.8) 0%, rgba(139, 92, 246, 0.4) 50%, transparent 100%);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .upload-zone {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            transform: translateY(-2px);
+        }
+        
+        .upload-zone.dragover {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+            transform: scale(1.02);
+        }
+        
+        .file-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .processing-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-left: 4px solid #10b981;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-element {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+        
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
+    <!-- Particles Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <span class="text-xl font-bold">✨</span>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Lúmen GEMINI</h1>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="dashboard.html" class="hover:text-indigo-400 transition-colors">Dashboard</a>
+                <a href="documentos.html" class="hover:text-indigo-400 transition-colors">Documentos</a>
+                <a href="historico.html" class="hover:text-indigo-400 transition-colors">Histórico</a>
+                <a href="configuracoes.html" class="hover:text-indigo-400 transition-colors">Configurações</a>
+                <a href="recursos.html" class="houver:text-indigo-400 trasition-colors">Voltar</a>
+            </div>
+            
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12 floating-element">
+                <h2 class="text-5xl font-bold mb-6 gradient-text">
+                    Processamento Inteligente de Documentos
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Carregue seus arquivos e deixe nossa IA criar resumos inteligentes, extrair insights e responder suas perguntas
+                </p>
+            </div>
+
+            <!-- Upload Zone -->
+            <div class="mb-12">
+                <div class="upload-zone rounded-2xl p-12 text-center cursor-pointer" id="uploadZone">
+                    <div class="mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-3xl">📄</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Arraste seus arquivos aqui</h3>
+                        <p class="text-gray-400 mb-4">ou clique para selecionar</p>
+                        <p class="text-sm text-gray-500">Suporta PDF, DOCX, TXT, MD • Máximo 10MB por arquivo</p>
+                    </div>
+                    <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.docx,.txt,.md">
+                    <button class="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all">
+                        Selecionar Arquivos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Files Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Files List -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">📁</span>
+                        Arquivos Carregados
+                    </h3>
+                    <div id="filesList" class="space-y-4">
+                        <!-- Files will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- AI Processing Panel -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <span class="mr-2">🤖</span>
+                        Processamento IA
+                    </h3>
+                    <div id="processingPanel" class="space-y-4">
+                        <div class="text-center text-gray-400 py-12">
+                            <div class="text-4xl mb-4">🧠</div>
+                            <p>Carregue arquivos para começar o processamento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="mt-12 hidden">
+                <h3 class="text-2xl font-bold mb-8 gradient-text">Resultados do Processamento</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Summary -->
+                    <div class="summary-card glass-effect rounded-2xl p-6">
+                        <h4 class="text-xl font-bold mb-4 flex items-center text-emerald-400">
+                            <span class="mr-2">📋</span>
+                            Resumo Inteligente
+                        </h4>
+                        <div id="summaryContent" class="text-gray-300 leading-relaxed">
+                            <!-- Summary will be generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Key Points -->
+                    <div class="glass-effect rounded-2xl p-6">
+                        <h4 class="text-xl font-bold mb-4 flex items-center text-blue-400">
+                            <span class="mr-2">🎯</span>
+                            Pontos Principais
+                        </h4>
+                        <div id="keyPoints" class="space-y-3">
+                            <!-- Key points will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Interface -->
+                <div class="glass-effect rounded-2xl p-6 mt-8">
+                    <h4 class="text-xl font-bold mb-4 flex items-center text-purple-400">
+                        <span class="mr-2">💬</span>
+                        Pergunte sobre seus documentos e separe eles.
+                    </h4>
+                    <div class="flex space-x-4">
+                        <input type="text" id="questionInput" placeholder="Faça uma pergunta sobre o conteúdo..." 
+                               class="flex-1 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button id="askButton" class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all">
+                            Perguntar para Lúmen.
+                        </button>
+                    </div>
+                    <div id="chatHistory" class="mt-6 space-y-4 max-h-60 overflow-y-auto">
+                        <!-- Chat messages will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles Animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 25000);
+            }
+            
+            setInterval(createParticle, 300);
+        }
+        
+        createParticles();
+
+        // File Upload Functionality
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const filesList = document.getElementById('filesList');
+        const processingPanel = document.getElementById('processingPanel');
+        const resultsSection = document.getElementById('resultsSection');
+        
+        let uploadedFiles = [];
+
+        // Upload zone click
+        uploadZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                    uploadedFiles.push({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        processed: false
+                    });
+                    addFileToList(uploadedFiles[uploadedFiles.length - 1]);
+                    processFile(uploadedFiles[uploadedFiles.length - 1]);
+                } else {
+                    alert(`Arquivo ${file.name} é muito grande. Máximo 10MB.`);
+                }
+            });
+        }
+
+        function addFileToList(fileObj) {
+            const fileElement = document.createElement('div');
+            fileElement.className = 'file-item rounded-xl p-4';
+            fileElement.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                            <span class="text-sm font-bold">${getFileIcon(fileObj.name)}</span>
+                        </div>
+                        <div>
+                            <div class="font-semibold">${fileObj.name}</div>
+                            <div class="text-sm text-gray-400">${formatFileSize(fileObj.size)}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div id="status-${fileObj.id}" class="text-sm text-yellow-400">Processando...</div>
+                        <button onclick="removeFile('${fileObj.id}')" class="text-red-400 hover:text-red-300">
+                            <span class="text-lg">×</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="progress-${fileObj.id}" class="progress-bar h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            `;
+            filesList.appendChild(fileElement);
+        }
+
+        function processFile(fileObj) {
+            // Simulate processing with progress
+            let progress = 0;
+            const progressBar = document.getElementById(`progress-${fileObj.id}`);
+            const statusElement = document.getElementById(`status-${fileObj.id}`);
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    fileObj.processed = true;
+                    statusElement.textContent = 'Concluído';
+                    statusElement.className = 'text-sm text-green-400';
+                    
+                    // Show processing result
+                    showProcessingResult(fileObj);
+                    
+                    // Check if all files are processed
+                    if (uploadedFiles.every(f => f.processed)) {
+                        showResults();
+                    }
+                }
+                progressBar.style.width = progress + '%';
+            }, 200);
+        }
+
+        function showProcessingResult(fileObj) {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'glass-effect rounded-xl p-4 mb-4';
+            resultElement.innerHTML = `
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <div class="font-semibold">${fileObj.name}</div>
+                        <div class="text-sm text-gray-400">Processamento concluído</div>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-300">
+                    • Texto extraído e analisado<br>
+                    • Resumo gerado automaticamente<br>
+                    • Pontos-chave identificados<br>
+                    • Pronto para perguntas
+                </div>
+            `;
+            
+            processingPanel.innerHTML = '';
+            processingPanel.appendChild(resultElement);
+        }
+
+        function showResults() {
+            resultsSection.classList.remove('hidden');
+            
+            // Generate sample summary
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = `
+                <p class="mb-4">Com base na análise dos documentos carregados, identificamos os seguintes temas principais:</p>
+                <p class="mb-4">Os documentos abordam conceitos fundamentais sobre inteligência artificial e processamento de linguagem natural, destacando aplicações práticas em análise de texto e automação de processos.</p>
+                <p>As informações apresentadas sugerem uma abordagem sistemática para implementação de soluções baseadas em IA, com foco em eficiência e precisão.</p>
+            `;
+            
+            // Generate key points
+            const keyPoints = document.getElementById('keyPoints');
+            const points = [
+                'Inteligência Artificial como ferramenta de transformação digital',
+                'Processamento de linguagem natural para análise de texto',
+                'Automação de processos através de algoritmos inteligentes',
+                'Implementação prática de soluções baseadas em IA',
+                'Foco em eficiência e precisão nos resultados'
+            ];
+            
+            keyPoints.innerHTML = points.map(point => `
+                <div class="flex items-start space-x-3">
+                    <span class="text-blue-400 mt-1">•</span>
+                    <span class="text-gray-300">${point}</span>
+                </div>
+            `).join('');
+        }
+
+        // Chat functionality
+        document.getElementById('askButton').addEventListener('click', askQuestion);
+        document.getElementById('questionInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') askQuestion();
+        });
+
+        function askQuestion() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            const chatHistory = document.getElementById('chatHistory');
+            
+            // Add user question
+            const userMessage = document.createElement('div');
+            userMessage.className = 'flex justify-end';
+            userMessage.innerHTML = `
+                <div class="bg-indigo-600 rounded-xl px-4 py-2 max-w-xs">
+                    <p class="text-sm">${question}</p>
+                </div>
+            `;
+            chatHistory.appendChild(userMessage);
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'flex justify-start';
+                aiMessage.innerHTML = `
+                    <div class="bg-gray-700 rounded-xl px-4 py-2 max-w-xs">
+                        <p class="text-sm">Com base nos documentos analisados, posso responder que ${question.toLowerCase()} está relacionado aos conceitos principais identificados no conteúdo. Gostaria de mais detalhes sobre algum aspecto específico?</p>
+                    </div>
+                `;
+                chatHistory.appendChild(aiMessage);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }, 1000);
+            
+            input.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Utility functions
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'pdf': '📄',
+                'docx': '📝',
+                'txt': '📃',
+                'md': '📋'
+            };
+            return icons[ext] || '📄';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function removeFile(fileId) {
+            uploadedFiles = uploadedFiles.filter(f => f.id != fileId);
+            // Refresh the files list
+            filesList.innerHTML = '';
+            uploadedFiles.forEach(file => addFileToList(file));
+            
+            if (uploadedFiles.length === 0) {
+                processingPanel.innerHTML = `
+                    <div class="text-center text-gray-400 py-12">
+                        <div class="text-4xl mb-4">🧠</div>
+                        <p>Carregue arquivos para começar o processamento</p>
+                    </div>
+                `;
+                resultsSection.classList.add('hidden');
+            }
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bb8a8131cc757',t:'MTc1NTc5NTk5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

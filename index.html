@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lúmen - Assistente FIRJAN SENAI GEMINI</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="robo.png" type="image/png">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- jsPDF + html2canvas para gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5lJS5G6RYy0/5f7T2GEQe2E7h8nVfQj4lOhRCj0J3Xlk2t0KYEQk6Qz8Q8m9pW8O8r2tgiPqHjDq8Xzj3/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/F9a7C0S0Yd7lYb0j8g2f7n9uVd2gXy3m2h+9Q5iZfBTe0C1f8f9aGgqf5w6rYz0w5+o+gq0kqB5Ixl6k0V3Vg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .tool-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+    .tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; border-radius: 12px; padding: 32px; max-width: 900px; width: 92%; max-height: 85vh; overflow-y: auto; }
+    .badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="gradient-bg text-white shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden shadow-md">
+                <img src="assistente-de-robo.png" alt="Logo Robô" class="w-10 h-10 object-contain">
+              </div>
+              
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold">Lúmen</h1>
+            <p class="text-sm opacity-90">Assistente FIRJAN SENAI GEMINI</p>
+          </div>
+        </div>
+        <nav class="hidden md:flex space-x-6">
+          <a href="#inicio" class="hover:text-yellow-300 transition-colors">Início</a>
+          <a href="#web" class="hover:text-yellow-300 transition-colors">Web Design</a>
+          <a href="#logistica" class="hover:text-yellow-300 transition-colors">Logística</a>
+          <a href="#suporte" class="hover:text-yellow-300 transition-colors">Suporte</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="inicio" class="py-16 px-6">
+    <div class="container mx-auto text-center">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+        Potencialize seus cursos de <span class="text-purple-600">Web Design</span> e <span class="text-blue-600">Logística</span> com IA
+      </h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+        Crie materiais didáticos, exercícios práticos, projetos e relatórios com Inteligência Artificial. Gere PDFs prontos para baixar e usar em aula.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="document.getElementById('web').scrollIntoView({behavior:'smooth'})" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">Ir para Web Design</button>
+        <button onclick="document.getElementById('logistica').scrollIntoView({behavior:'smooth'})" class="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors">Ir para Logística</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-12 px-6 bg-gradient-to-r from-purple-50 to-blue-50">
+    <div class="container mx-auto">
+      <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">Por que escolher o Lúmen?</h3>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">🎨</div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Criação Inteligente</h4>
+          <p class="text-gray-600">Gere exercícios e projetos personalizados para cada nível</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">⚡</div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Rapidez</h4>
+          <p class="text-gray-600">Economize horas preparando aulas e materiais</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">🎯</div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Personalização</h4>
+          <p class="text-gray-600">Adapte o conteúdo às necessidades dos seus alunos</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">📚</div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Qualidade SENAI</h4>
+          <p class="text-gray-600">Padrões de excelência do FIRJAN SENAI</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEB DESIGN -->
+  <section id="web" class="py-16 px-6">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-3xl font-bold text-gray-800">Ferramentas de Web Design</h3>
+        <span class="badge bg-purple-100 text-purple-700">HTML • CSS • JS • Aulas</span>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Gerador de Exercícios -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">📝</div>
+            <h4 class="text-xl font-semibold text-gray-800">Gerador de Exercícios</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Crie exercícios práticos de HTML, CSS e JavaScript</p>
+          <button onclick="openModal('exerciseModal')" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Criador de Projetos -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">🚀</div>
+            <h4 class="text-xl font-semibold text-gray-800">Criador de Projetos</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Gere briefings completos para projetos</p>
+          <button onclick="openModal('projectModal')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Avaliador de Código -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">✅</div>
+            <h4 class="text-xl font-semibold text-gray-800">Avaliador de Código</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Feedback imediato sobre HTML/CSS/JS</p>
+          <button onclick="openModal('codeModal')" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Gerador de Conteúdo -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">📖</div>
+            <h4 class="text-xl font-semibold text-gray-800">Gerador de Conteúdo</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Crie apostilas, slides e resumos</p>
+          <button onclick="openModal('contentModal')" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Quiz -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">🎯</div>
+            <h4 class="text-xl font-semibold text-gray-800">Quiz Interativo</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Monte questionários e gabaritos</p>
+          <button onclick="openModal('quizModal')" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Entrevista -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">💼</div>
+            <h4 class="text-xl font-semibold text-gray-800">Simulador de Entrevista</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Perguntas técnicas e comportamentais</p>
+          <button onclick="openModal('interviewModal')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGÍSTICA -->
+  <section id="logistica" class="py-16 px-6 bg-gray-50">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-3xl font-bold text-gray-800">Ferramentas de Logística</h3>
+        <span class="badge bg-blue-100 text-blue-700">Estoque • Rotas • Relatórios</span>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Exercício / Estudo de Estoque (EOQ) -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mr-4">📦</div>
+            <h4 class="text-xl font-semibold text-gray-800">Cálculo de Estoque (EOQ)</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Dimensione lote econômico de compra</p>
+          <button onclick="openModal('estoqueModal')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Planejamento de Rotas -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mr-4">🛣️</div>
+            <h4 class="text-xl font-semibold text-gray-800">Planejamento de Rotas</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Sequência sugerida de entregas</p>
+          <button onclick="openModal('rotasModal')" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Planejamento (MRP Simplificado) -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-fuchsia-100 rounded-lg flex items-center justify-center mr-4">🗓️</div>
+            <h4 class="text-xl font-semibold text-gray-800">Planejamento de Produção</h4>
+          </div>
+          <p class="text-gray-600 mb-4">MRP simplificado por períodos</p>
+          <button onclick="openModal('planejamentoModal')" class="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Checklist de Recebimento -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mr-4">✅</div>
+            <h4 class="text-xl font-semibold text-gray-800">Checklist de Recebimento</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Checklist para doca e conferência</p>
+          <button onclick="openModal('checklistModal')" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+        <!-- Relatório Logístico -->
+        <div class="tool-card">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center mr-4">📑</div>
+            <h4 class="text-xl font-semibold text-gray-800">Gerador de Relatórios</h4>
+          </div>
+          <p class="text-gray-600 mb-4">Sumário de KPIs e insights</p>
+          <button onclick="openModal('relatorioModal')" class="w-full bg-stone-700 hover:bg-stone-800 text-white py-2 px-4 rounded-lg">Usar Ferramenta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="suporte" class="bg-gray-800 text-white py-12 px-6">
+    <div class="container mx-auto text-center">
+      <div class="flex items-center justify-center space-x-3 mb-4">
+        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">💡</div>
+        <h3 class="text-xl font-bold">Lúmen - FIRJAN SENAI GEMINI</h3>
+      </div>
+      <p class="text-gray-400 mb-6">Transformando a educação com Inteligência Artificial</p>
+      <div class="flex justify-center space-x-6 text-sm">
+        <a href="#inicio" class="hover:text-purple-400 transition-colors">Início</a>
+        <a href="#web" class="hover:text-purple-400 transition-colors">Web Design</a>
+        <a href="#logistica" class="hover:text-purple-400 transition-colors">Logística</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== MODAIS ===================== -->
+  
+  <!-- Demo Modal (mantido) -->
+  <div id="demoModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-gray-800">Demo do Lúmen</h3>
+        <button onclick="closeModal('demoModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-purple-50 p-4 rounded-lg">
+          <h4 class="font-semibold text-purple-800 mb-2">🎨 Exemplo: Gerador de Exercícios</h4>
+          <p class="text-gray-700 mb-3">Exercício de CSS Flexbox:</p>
+          <div class="bg-white p-3 rounded border-l-4 border-purple-500">
+            <p class="text-sm"><strong>Exercício:</strong> Crie um layout responsivo usando Flexbox com 3 cards.</p>
+            <p class="text-sm mt-2"><strong>Dificuldade:</strong> Intermediário</p>
+            <p class="text-sm"><strong>Tempo estimado:</strong> 45 minutos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise Generator Modal -->
+  <div id="exerciseModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-gray-800">Gerador de Exercícios</h3>
+        <button onclick="closeModal('exerciseModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateExercise(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Tecnologia</label>
+          <select id="technology" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="javascript">JavaScript</option>
+            <option value="responsive">Design Responsivo</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nível de Dificuldade</label>
+          <select id="difficulty" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Tema do Exercício</label>
+          <input type="text" id="theme" placeholder="Ex: E-commerce, Blog, Portfolio..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold">Gerar Exercício</button>
+      </form>
+      <div id="exerciseResult" class="mt-6 hidden">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+          <h4 class="font-semibold text-green-800 mb-2">✅ Exercício Gerado!</h4>
+          <div id="exerciseContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('exerciseContent','exercicio-web.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Creator Modal -->
+  <div id="projectModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Criador de Projetos</h3>
+        <button onclick="closeModal('projectModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateProject(event)" class="space-y-4">
+        <input type="text" id="projectTheme" placeholder="Tema do Projeto (ex: cafeteria, portfólio)" class="w-full p-3 border rounded">
+        <select id="projectDifficulty" class="w-full p-3 border rounded">
+          <option value="iniciante">Iniciante</option>
+          <option value="intermediario">Intermediário</option>
+          <option value="avancado">Avançado</option>
+        </select>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Gerar Projeto</button>
+      </form>
+      <div id="projectResult" class="mt-6 hidden">
+        <div class="bg-blue-50 border p-4 rounded">
+          <h4 class="font-semibold text-blue-800">📌 Projeto Gerado!</h4>
+          <div id="projectContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('projectContent','projeto-web.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Evaluator Modal -->
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Avaliador de Código</h3>
+        <button onclick="closeModal('codeModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="evaluateCode(event)" class="space-y-4">
+        <textarea id="userCode" rows="8" placeholder="Cole seu HTML/CSS/JS aqui..." class="w-full p-3 border rounded"></textarea>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded">Avaliar</button>
+      </form>
+      <div id="codeResult" class="mt-6 hidden">
+        <div class="bg-green-50 border p-4 rounded">
+          <h4 class="font-semibold text-green-800">✅ Avaliação</h4>
+          <div id="codeContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('codeContent','avaliacao-codigo.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Generator Modal -->
+  <div id="contentModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Gerador de Conteúdo</h3>
+        <button onclick="closeModal('contentModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateContent(event)" class="space-y-4">
+        <input type="text" id="contentTopic" placeholder="Tópico (ex: Box Model, Flexbox, SEO)" class="w-full p-3 border rounded">
+        <select id="contentType" class="w-full p-3 border rounded">
+          <option value="resumo">Resumo</option>
+          <option value="apostila">Apostila</option>
+          <option value="slides">Roteiro de Slides</option>
+        </select>
+        <button type="submit" class="w-full bg-yellow-600 text-white py-2 rounded">Gerar</button>
+      </form>
+      <div id="contentResult" class="mt-6 hidden">
+        <div class="bg-yellow-50 border p-4 rounded">
+          <h4 class="font-semibold text-yellow-800">📖 Conteúdo Gerado!</h4>
+          <div id="contentOutput" class="text-gray-700"></div>
+          <button onclick="downloadPDF('contentOutput','conteudo-web.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div id="quizModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Gerador de Quiz</h3>
+        <button onclick="closeModal('quizModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateQuiz(event)" class="space-y-4">
+        <input type="text" id="quizTopic" placeholder="Tema do Quiz (ex: HTML Semântico)" class="w-full p-3 border rounded">
+        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded">Gerar Quiz</button>
+      </form>
+      <div id="quizResult" class="mt-6 hidden">
+        <div class="bg-red-50 border p-4 rounded">
+          <h4 class="font-semibold text-red-800">📝 Quiz Gerado!</h4>
+          <div id="quizContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('quizContent','quiz-web.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview Modal -->
+  <div id="interviewModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Simulador de Entrevista</h3>
+        <button onclick="closeModal('interviewModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateInterview(event)" class="space-y-4">
+        <input type="text" id="interviewRole" placeholder="Cargo (ex: Front-end Júnior)" class="w-full p-3 border rounded">
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded">Gerar Perguntas</button>
+      </form>
+      <div id="interviewResult" class="mt-6 hidden">
+        <div class="bg-indigo-50 border p-4 rounded">
+          <h4 class="font-semibold text-indigo-800">🎤 Entrevista Simulada!</h4>
+          <div id="interviewContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('interviewContent','entrevista-web.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= MODAIS LOGÍSTICA ======= -->
+  
+  <!-- Estoque (EOQ) Modal -->
+  <div id="estoqueModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Cálculo de Estoque (EOQ)</h3>
+        <button onclick="closeModal('estoqueModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateEOQ(event)" class="grid md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Demanda anual (D)</label>
+          <input type="number" id="eoqD" class="w-full p-3 border rounded" placeholder="ex: 12000" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Custo por pedido (S)</label>
+          <input type="number" id="eoqS" class="w-full p-3 border rounded" placeholder="ex: 150" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Custo de manter (H) / ano</label>
+          <input type="number" id="eoqH" class="w-full p-3 border rounded" placeholder="ex: 8" required>
+        </div>
+        <div class="md:col-span-3">
+          <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded">Calcular</button>
+        </div>
+      </form>
+      <div id="eoqResult" class="mt-6 hidden">
+        <div class="bg-emerald-50 border p-4 rounded">
+          <h4 class="font-semibold text-emerald-800">📦 Resultado EOQ</h4>
+          <div id="eoqContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('eoqContent','estoque-eoq.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rotas Modal -->
+  <div id="rotasModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Planejamento de Rotas</h3>
+        <button onclick="closeModal('rotasModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateRotas(event)" class="space-y-4">
+        <textarea id="rotasLista" rows="5" class="w-full p-3 border rounded" placeholder="Liste destinos (um por linha):\nCentro, Tijuca, Copacabana..."></textarea>
+        <button type="submit" class="w-full bg-sky-600 text-white py-2 rounded">Gerar Sequência</button>
+      </form>
+      <div id="rotasResult" class="mt-6 hidden">
+        <div class="bg-sky-50 border p-4 rounded">
+          <h4 class="font-semibold text-sky-800">🛣️ Roteiro Sugerido</h4>
+          <div id="rotasContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('rotasContent','rotas-logistica.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Planejamento (MRP) Modal -->
+  <div id="planejamentoModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Planejamento de Produção</h3>
+        <button onclick="closeModal('planejamentoModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generatePlanejamento(event)" class="grid md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Demanda por período (CSV)</label>
+          <input type="text" id="mrpDemanda" class="w-full p-3 border rounded" placeholder="ex: 50,80,40,60" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Lead time (períodos)</label>
+          <input type="number" id="mrpLT" class="w-full p-3 border rounded" value="1" min="0" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Estoque inicial</label>
+          <input type="number" id="mrpEstoque" class="w-full p-3 border rounded" value="0" min="0" required>
+        </div>
+        <div class="md:col-span-3">
+          <button type="submit" class="w-full bg-fuchsia-600 text-white py-3 rounded">Gerar Plano</button>
+        </div>
+      </form>
+      <div id="planejamentoResult" class="mt-6 hidden">
+        <div class="bg-fuchsia-50 border p-4 rounded">
+          <h4 class="font-semibold text-fuchsia-800">🗓️ Plano de Produção</h4>
+          <div id="planejamentoContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('planejamentoContent','planejamento-producao.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checklist Modal -->
+  <div id="checklistModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Checklist de Recebimento</h3>
+        <button onclick="closeModal('checklistModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateChecklist(event)" class="space-y-4">
+        <input type="text" id="checklistFornecedor" class="w-full p-3 border rounded" placeholder="Fornecedor (opcional)">
+        <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded">Gerar Checklist</button>
+      </form>
+      <div id="checklistResult" class="mt-6 hidden">
+        <div class="bg-amber-50 border p-4 rounded">
+          <h4 class="font-semibold text-amber-800">✅ Itens de Conferência</h4>
+          <div id="checklistContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('checklistContent','checklist-recebimento.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relatório Modal -->
+  <div id="relatorioModal" class="modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Gerador de Relatórios Logísticos</h3>
+        <button onclick="closeModal('relatorioModal')" class="text-2xl">&times;</button>
+      </div>
+      <form onsubmit="generateRelatorio(event)" class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Período</label>
+          <input type="text" id="relPeriodo" class="w-full p-3 border rounded" placeholder="ex: Ago/2025" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Pedidos atendidos</label>
+          <input type="number" id="relPedidos" class="w-full p-3 border rounded" value="0" min="0" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">OTIF (%)</label>
+          <input type="number" id="relOTIF" class="w-full p-3 border rounded" value="95" min="0" max="100" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Custo logístico (R$)</label>
+          <input type="number" id="relCusto" class="w-full p-3 border rounded" value="0" min="0" required>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="w-full bg-stone-700 text-white py-3 rounded">Gerar Relatório</button>
+        </div>
+      </form>
+      <div id="relatorioResult" class="mt-6 hidden">
+        <div class="bg-stone-50 border p-4 rounded">
+          <h4 class="font-semibold text-stone-800">📑 Relatório</h4>
+          <div id="relatorioContent" class="text-gray-700"></div>
+          <button onclick="downloadPDF('relatorioContent','relatorio-logistico.pdf')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">📄 Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script>
+    // Utils: abrir/fechar modal
+    function openModal(id){ document.getElementById(id).classList.add('active'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+
+    // Fechar ao clicar fora
+    window.addEventListener('click', (e) => {
+      document.querySelectorAll('.modal').forEach(m => { if(e.target === m) m.classList.remove('active'); });
+    });
+
+    // PDF utilitário (suporta múltiplas páginas)
+    async function downloadPDF(targetId, filename = 'documento.pdf'){
+      const el = document.getElementById(targetId);
+      if(!el){ alert('Nada para exportar.'); return; }
+      const { jsPDF } = window.jspdf;
+      const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgWidth = pageWidth;
+      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(filename);
+    }
+
+    // ====== WEB: Exercícios ======
+    function generateExercise(event){
+      event.preventDefault();
+      const technology = document.getElementById('technology').value;
+      const difficulty = document.getElementById('difficulty').value;
+      const theme = document.getElementById('theme').value || 'Website genérico';
+
+      const exercises = {
+        html: {
+          iniciante: `Crie uma página para ${theme} com <header>, <nav>, <main> e <footer>. Inclua uma lista e uma imagem com alt.`,
+          intermediario: `Estruture ${theme} com formulários, tabelas e elementos multimídia; use tags semânticas e aria-labels.`,
+          avancado: `Implemente uma aplicação HTML5 para ${theme} com Web Storage (localStorage), validação nativa e acessibilidade completa.`
+        },
+        css: {
+          iniciante: `Estilize ${theme} com cores, tipografia e espaçamentos básicos.`,
+          intermediario: `Crie layout responsivo para ${theme} com Flexbox/Grid, transições e hover states.`,
+          avancado: `Desenvolva design system para ${theme} com variáveis CSS, animações complexas e otimização de performance.`
+        },
+        javascript: {
+          iniciante: `Adicione interações ao ${theme}: eventos de clique, validação simples de formulário.`,
+          intermediario: `Implemente carrossel, filtros e busca no ${theme}.`,
+          avancado: `Crie uma SPA para ${theme} com roteamento simples e consumo de APIs.`
+        },
+        responsive: {
+          iniciante: `Aplique media queries para mobile e desktop no ${theme}.`,
+          intermediario: `Estratégia mobile-first no ${theme} com breakpoints e imagens responsivas.`,
+          avancado: `Plano completo de responsividade no ${theme} incluindo performance e acessibilidade.`
+        }
+      };
+
+      const exerciseText = exercises[technology][difficulty];
+      const timeEstimate = difficulty === 'iniciante' ? '30-45 min' : difficulty === 'intermediario' ? '60-90 min' : '120-180 min';
+
+      document.getElementById('exerciseContent').innerHTML = `
+        <div class="prose max-w-none">
+          <p><strong>Exercício:</strong> ${exerciseText}</p>
+          <p class="mt-2"><strong>Tempo estimado:</strong> ${timeEstimate}</p>
+          <p><strong>Tecnologia:</strong> ${technology.toUpperCase()}</p>
+          <p><strong>Nível:</strong> ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</p>
+          <div class="mt-4 p-3 bg-blue-50 rounded">
+            <p class="text-sm text-blue-800"><strong>Dica:</strong> Planeje a estrutura antes de codificar.</p>
+          </div>
+        </div>`;
+
+      document.getElementById('exerciseResult').classList.remove('hidden');
+    }
+
+    // ====== WEB: Projetos ======
+    function generateProject(e){
+      e.preventDefault();
+      const tema = document.getElementById('projectTheme').value || 'Website institucional';
+      const nivel = document.getElementById('projectDifficulty').value;
+
+      const backlog = {
+        iniciante: ['Header com navegação', 'Seção hero', 'Seção sobre', 'Galeria simples', 'Rodapé'],
+        intermediario: ['Menu responsivo', 'Carrossel', 'Catálogo com filtros', 'Formulário de contato com validação', 'Animações CSS'],
+        avancado: ['SPA com roteamento', 'Integração API (produtos/posts)', 'Autenticação fake', 'Testes básicos', 'CI/CD simulado']
+      };
+
+      const artefatos = nivel === 'iniciante' ? ['Wireframe'] : nivel === 'intermediario' ? ['Wireframe','Protótipo Figma'] : ['Wireframe','Protótipo Figma','Guia de estilos'];
+
+      document.getElementById('projectContent').innerHTML = `
+        <h5 class="font-bold mb-2">Tema</h5>
+        <p>${tema}</p>
+        <h5 class="font-bold mt-4 mb-2">Objetivos</h5>
+        <ul class="list-disc ml-6">
+          <li>Aplicar boas práticas de UX/UI</li>
+          <li>Construir layout responsivo</li>
+          <li>Entregar código limpo e acessível</li>
+        </ul>
+        <h5 class="font-bold mt-4 mb-2">Backlog sugerido</h5>
+        <ul class="list-disc ml-6">${backlog[nivel].map(i=>`<li>${i}</li>`).join('')}</ul>
+        <h5 class="font-bold mt-4 mb-2">Artefatos</h5>
+        <ul class="list-disc ml-6">${artefatos.map(i=>`<li>${i}</li>`).join('')}</ul>
+        <h5 class="font-bold mt-4 mb-2">Critérios de aceitação</h5>
+        <ul class="list-disc ml-6">
+          <li>Layout responsivo (>=320px)</li>
+          <li>Sem erros de validação W3C</li>
+          <li>Acessibilidade: contraste e semântica</li>
+        </ul>`;
+
+      document.getElementById('projectResult').classList.remove('hidden');
+    }
+
+    // ====== WEB: Avaliador de Código ======
+    function evaluateCode(e){
+      e.preventDefault();
+      const code = document.getElementById('userCode').value || '';
+      const suggestions = [];
+      if(code.includes('<div') && code.includes('role="')) suggestions.push('Evite roles redundantes quando usar elementos semânticos corretos.');
+      if(!code.includes('alt=') && code.match(/<img\s/)) suggestions.push('Imagens devem possuir atributo alt descritivo.');
+      if(code.length < 40) suggestions.push('Forneça um trecho maior para avaliação mais rica.');
+      if(!code.includes('meta name="viewport"')) suggestions.push('Inclua <meta name="viewport" content="width=device-width, initial-scale=1.0">.');
+      if(!code.includes('aria-') && code.match(/<button|<nav|<header|<main/)) suggestions.push('Considere atributos ARIA somente quando necessário.');
+
+      const ok = suggestions.length === 0 ? ['Código parece ok para o escopo enviado.'] : [];
+      document.getElementById('codeContent').innerHTML = `
+        <h5 class="font-bold mb-2">Resumo</h5>
+        <ul class="list-disc ml-6">${[...ok,...suggestions].map(s=>`<li>${s}</li>`).join('')}</ul>`;
+      document.getElementById('codeResult').classList.remove('hidden');
+    }
+
+    // ====== WEB: Gerador de Conteúdo ======
+    function generateContent(e){
+      e.preventDefault();
+      const topic = document.getElementById('contentTopic').value || 'HTML Semântico';
+      const type = document.getElementById('contentType').value;
+      let body = '';
+      if(type === 'resumo'){
+        body = `<p><strong>Definição:</strong> ${topic} é um conjunto de práticas que melhora estrutura e compreensão de páginas.</p>
+                <p><strong>Pontos-chave:</strong></p>
+                <ul class='list-disc ml-6'><li>Conceitos-base</li><li>Boas práticas</li><li>Erros comuns</li></ul>`;
+      } else if(type === 'apostila'){
+        body = `<h5 class='font-bold'>Sumário</h5>
+                <ol class='ml-6 list-decimal'><li>Introdução</li><li>Teoria</li><li>Prática</li><li>Exercícios</li></ol>
+                <p class='mt-2'>Material detalhado sobre ${topic} com exemplos.</p>`;
+      } else {
+        body = `<h5 class='font-bold'>Roteiro de Slides</h5>
+                <ul class='list-disc ml-6'><li>Slide 1: Contexto</li><li>Slide 2: Conceitos</li><li>Slide 3: Demonstração</li><li>Slide 4: Exercícios</li></ul>`;
+      }
+      document.getElementById('contentOutput').innerHTML = `<h4 class='font-semibold mb-2'>${topic} — ${type.toUpperCase()}</h4>${body}`;
+      document.getElementById('contentResult').classList.remove('hidden');
+    }
+
+    // ====== WEB: Quiz ======
+    function generateQuiz(e){
+      e.preventDefault();
+      const topic = document.getElementById('quizTopic').value || 'HTML Semântico';
+      const qs = [
+        {q:`O que é ${topic}?`, a:'Conjunto de boas práticas de marcação e significado.'},
+        {q:'Qual tag representa o conteúdo principal?', a:'<main>'},
+        {q:'Para que serve o atributo alt?', a:'Descrever imagens para acessibilidade.'},
+        {q:'O que é responsividade?', a:'Layout que se adapta a diferentes telas.'},
+        {q:'Diferença entre <section> e <article>?', a:'Article é independente; section agrupa conteúdo relacionado.'}
+      ];
+      const html = qs.map((i,idx)=>`<p class='mb-2'><strong>${idx+1}.</strong> ${i.q}<br><em>Resposta:</em> ${i.a}</p>`).join('');
+      document.getElementById('quizContent').innerHTML = `<h4 class='font-semibold mb-3'>Tema: ${topic}</h4>${html}`;
+      document.getElementById('quizResult').classList.remove('hidden');
+    }
+
+    // ====== WEB: Entrevista ======
+    function generateInterview(e){
+      e.preventDefault();
+      const role = document.getElementById('interviewRole').value || 'Front-end Júnior';
+      const perguntas = [
+        'Explique a diferença entre display: flex e grid e quando usar cada um.',
+        'Como você garante acessibilidade em formulários?',
+        'O que é debounce/throttle e quando aplicar?',
+        'Fale sobre uma otimização de performance que já aplicou.',
+        'Como você estrutura CSS escalável (BEM, utility-first, etc.)?'
+      ];
+      document.getElementById('interviewContent').innerHTML = `
+        <p><strong>Cargo:</strong> ${role}</p>
+        <h5 class='font-bold mt-3 mb-2'>Perguntas</h5>
+        <ol class='ml-6 list-decimal'>${perguntas.map(p=>`<li class='mb-1'>${p}</li>`).join('')}</ol>`;
+      document.getElementById('interviewResult').classList.remove('hidden');
+    }
+
+    // ====== LOG: EOQ ======
+    function generateEOQ(e){
+      e.preventDefault();
+      const D = parseFloat(document.getElementById('eoqD').value);
+      const S = parseFloat(document.getElementById('eoqS').value);
+      const H = parseFloat(document.getElementById('eoqH').value);
+      if([D,S,H].some(isNaN) || H === 0){ alert('Verifique os valores.'); return; }
+      const Q = Math.sqrt((2*D*S)/H);
+      const N = D / Q;
+      const T = 365 / N; // dias entre pedidos (aprox.)
+      document.getElementById('eoqContent').innerHTML = `
+        <p><strong>Entrada:</strong> D=${D}, S=R$ ${S.toFixed(2)}, H=R$ ${H.toFixed(2)}/un/ano</p>
+        <p><strong>Lote Econômico (Q*):</strong> ${Q.toFixed(2)} unidades</p>
+        <p><strong>Nº de pedidos/ano:</strong> ${N.toFixed(2)}</p>
+        <p><strong>Intervalo médio entre pedidos:</strong> ${T.toFixed(1)} dias</p>`;
+      document.getElementById('eoqResult').classList.remove('hidden');
+    }
+
+    // ====== LOG: Rotas ======
+    function generateRotas(e){
+      e.preventDefault();
+      const lines = (document.getElementById('rotasLista').value || '').split(/\n+/).map(s=>s.trim()).filter(Boolean);
+      if(lines.length === 0){ alert('Informe pelo menos um destino por linha.'); return; }
+      // Heurística simples: ordenar alfabeticamente como proxy de proximidade (placeholder)
+      const sequencia = [...lines].sort((a,b)=>a.localeCompare(b));
+      const html = sequencia.map((p,i)=>`<li><strong>Parada ${i+1}:</strong> ${p}</li>`).join('');
+      document.getElementById('rotasContent').innerHTML = `
+        <p class='mb-2'><strong>Destinos informados:</strong> ${lines.length}</p>
+        <ol class='ml-6 list-decimal'>${html}</ol>
+        <p class='mt-3 text-sm text-gray-600'>* Dica: substitua esta heurística por uma API de mapas/otimização para rotas reais.</p>`;
+      document.getElementById('rotasResult').classList.remove('hidden');
+    }
+
+    // ====== LOG: Planejamento (MRP simplificado) ======
+    function generatePlanejamento(e){
+      e.preventDefault();
+      const demanda = document.getElementById('mrpDemanda').value.split(',').map(v=>parseFloat(v.trim())).filter(v=>!isNaN(v));
+      const LT = parseInt(document.getElementById('mrpLT').value,10);
+      let estoque = parseFloat(document.getElementById('mrpEstoque').value);
+      if(demanda.length === 0){ alert('Informe a demanda.'); return; }
+      const rows = [];
+      for(let t=0; t<demanda.length; t++){
+        const req = demanda[t];
+        let receb = 0;
+        if(LT>0 && t-LT >= 0){ receb = Math.max(0, demanda[t-LT] - estoque < 0 ? 0 : demanda[t-LT] - 0); }
+        estoque = estoque + receb - req;
+        const liberar = estoque < 0 ? Math.abs(estoque) : 0;
+        if(liberar>0){ estoque += liberar; }
+        rows.push({Periodo:t+1, Demanda:req, Recebimento:receb, LiberarOrdem:liberar, EstoqueFinal:estoque});
+      }
+      const table = `
+        <table class='w-full text-left border mt-2'>
+          <thead class='bg-gray-100'>
+            <tr>
+              <th class='p-2 border'>Período</th>
+              <th class='p-2 border'>Demanda</th>
+              <th class='p-2 border'>Recebimento</th>
+              <th class='p-2 border'>Liberar Ordem</th>
+              <th class='p-2 border'>Estoque Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r=>`<tr>
+              <td class='p-2 border'>${r.Periodo}</td>
+              <td class='p-2 border'>${r.Demanda}</td>
+              <td class='p-2 border'>${r.Recebimento}</td>
+              <td class='p-2 border'>${r.LiberarOrdem}</td>
+              <td class='p-2 border'>${r.EstoqueFinal}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`;
+      document.getElementById('planejamentoContent').innerHTML = table;
+      document.getElementById('planejamentoResult').classList.remove('hidden');
+    }
+
+    // ====== LOG: Checklist ======
+    function generateChecklist(e){
+      e.preventDefault();
+      const fornecedor = document.getElementById('checklistFornecedor').value || 'Fornecedor';
+      const itens = [
+        'NF-e conferida (dados, CFOP, impostos)',
+        'Quantidade conferida com pedido',
+        'Integridade da embalagem',
+        'Validade/Lote quando aplicável',
+        'Registro de divergências e fotos',
+        'Entrada lançada no sistema',
+        'Etiquetas e endereçamento'
+      ];
+      document.getElementById('checklistContent').innerHTML = `
+        <p><strong>Fornecedor:</strong> ${fornecedor}</p>
+        <ol class='ml-6 list-decimal mt-2'>${itens.map(i=>`<li class='mb-1'>${i}</li>`).join('')}</ol>`;
+      document.getElementById('checklistResult').classList.remove('hidden');
+    }
+
+    // ====== LOG: Relatório ======
+    function generateRelatorio(e){
+      e.preventDefault();
+      const periodo = document.getElementById('relPeriodo').value;
+      const pedidos = parseInt(document.getElementById('relPedidos').value,10)||0;
+      const otif = parseFloat(document.getElementById('relOTIF').value)||0;
+      const custo = parseFloat(document.getElementById('relCusto').value)||0;
+      const ticketMedio = pedidos>0 ? (custo/pedidos).toFixed(2) : '0.00';
+      document.getElementById('relatorioContent').innerHTML = `
+        <h4 class='font-semibold mb-2'>Período: ${periodo}</h4>
+        <ul class='list-disc ml-6'>
+          <li>Pedidos atendidos: ${pedidos}</li>
+          <li>OTIF: ${otif}%</li>
+          <li>Custo logístico: R$ ${custo.toFixed(2)}</li>
+          <li>Custo médio por pedido: R$ ${ticketMedio}</li>
+        </ul>
+        <h5 class='font-bold mt-3'>Insights</h5>
+        <ul class='list-disc ml-6'>
+          <li>Manter OTIF acima de 95% para satisfação do cliente.</li>
+          <li>Revisar rotas e ocupação de veículos para reduzir custo por pedido.</li>
+          <li>Priorizar fornecedores com menor índice de divergência.</li>
+        </ul>`;
+      document.getElementById('relatorioResult').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
